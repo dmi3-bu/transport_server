@@ -80,9 +80,29 @@
                     </div>
                     <p>{{ form.errors.password2 }}</p>
                 </div>
+                <span id="messagePassword"></span>
                 <button type="submit" class="btn btn-primary mb-2" style="width: 100%;">Зарегистрироваться</button>
             </form>
         </div>
         <div class="col-md-3"></div>
     </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        $('#password, #confirm_password').on('keyup', function () {
+            if($('#password1').val() == $('#password2').val()) {
+                $('#messagePassword').html('Пароли совпадают');
+            }
+            else {
+                $('#messagePassword').html('Пароли несовпадают');
+            }
+        });
+        $('#phone').on('keyup', function () {
+            $('#phone').val($('#phone').val().replace(/[0-9]/));
+        });
+        $('#passport').on('keyup', function () {
+            $('#phone').val($('#phone').val().replace(/[0-9]/));
+        });
+    </script>
 {% endblock %}

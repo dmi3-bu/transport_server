@@ -9,5 +9,7 @@ urlpatterns = [
     path('main', views.main),
     path('login', views.login_view),
     path('register', views.register),
-    path('logout', views.logout),
+    path('logout', views.logout_view),
+    path('api/login', views.api_login),
+    # path('api/beacons', views.beacons_index)
 ]
