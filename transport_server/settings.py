@@ -111,7 +111,7 @@ AUTH_USER_MODEL = 'main.User'
 
 LANGUAGE_CODE = 'ru-ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Vladivostok'
 
 USE_I18N = True
 
@@ -128,3 +128,7 @@ STATIC_ROOT = BASE_DIR + STATIC_URL
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'main/media')
+
+LOGIN_URL = '/login'
+LOGIN_REDIRECT_URL = '/main'
+ACCOUNT_LOGOUT_REDIRECT_URL = '/exit'
