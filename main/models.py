@@ -19,7 +19,7 @@ class User(AbstractUser):
     # user_permissions - связь
     # Кастомные поля:
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    passport = models.IntegerField(null=True)
+    passport = models.CharField(max_length=10, default='')
     middle_name = models.CharField(max_length=50, default='')
     date_of_birth = models.DateField(null=True)
     updated_at = models.DateTimeField(auto_now=True)
