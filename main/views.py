@@ -19,6 +19,11 @@ def login_view(request):
     return render(request, 'login.html', {'form': form})
 
 
+@login_required
+def logout(request):
+    logout(request)
+
+
 def register(request):
     if request.method == 'POST':
         if request.POST['password'] != request.POST['password2']:
@@ -45,6 +50,3 @@ def main(request):
     return render(request, 'main.html', context)
     pass
 
-
-def logout(request):
-    pass
