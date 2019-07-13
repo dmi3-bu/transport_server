@@ -22,7 +22,6 @@ def login_view(request):
         if form.is_valid():
             user = authenticate(request, username=form.cleaned_data['username'],
                                 password=form.cleaned_data['password'])
-            print('!!!!!!!!!!!!!!')
             if user is not None:
                 login(request, user)
                 return redirect('/main')
