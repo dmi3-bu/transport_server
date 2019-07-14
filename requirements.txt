@@ -3,8 +3,10 @@ bcrypt==3.1.7
 cffi==1.12.3
 cryptography==2.7
 Django==2.2.3
+django-cors-headers==3.0.2
 django-extensions==2.1.9
 django-rest-framework==0.1.0
+django-webpack-loader==0.6.0
 djangorestframework==3.9.4
 Fabric3==1.14.post1
 paramiko==2.6.0
