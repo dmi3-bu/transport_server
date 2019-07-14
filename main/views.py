@@ -102,13 +102,15 @@ def genQR(request):
                 qr.make(fit=True)
                 img = qr.make_image(fill_color="black", back_color="white")
                 name_img = "qr-" + code_qr + '.png'
-                img_path = settings.MEDIA_ROOT + '/' + name_img
                 blob = BytesIO()
                 img.save(blob)
                 ticket.image.save(name_img, File(blob), save=False)
                 ticket.save()
 
-                return redirect('/qr', {'ticket': ticket})
+                base_url = reverse('qr')
+                query_string = urlencode({'ticket_id': ticket.id})
+                url = '{}?{}'.format(base_url, query_string)
+                return redirect(url)
             else:
                 if form.cleaned_data['ticket_id'] is not '':
                     t = Ticket.objects.get(id=form.cleaned_data['ticket_id'])
@@ -137,11 +139,12 @@ def main(request):
             base_url = reverse('admin-panel')
             query_string = urlencode({'passport': finded_user.passport})
             url = '{}?{}'.format(base_url, query_string)
-            return redirect(url)  # 4
+            return redirect(url)
     else:
         form = SearchForm()
     return render(request, 'main.html', {'form': form})
 
 
 def qr_view(request):
-    return render(request, 'qr.html')
+    ticket = Ticket.objects.get(id=request.GET['ticket_id'])
+    return render(request, 'qr.html', {'ticket': ticket})
