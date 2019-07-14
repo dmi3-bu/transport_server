@@ -1,7 +1,9 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect
-from .forms import UserRegisterForm, UserLoginForm
+from django.core.files import File
+from main.models import Ticket
+from .forms import UserRegisterForm, UserLoginForm, SearchForm, GenQRForm
 from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view, permission_classes
@@ -81,13 +83,13 @@ def genQR(request):
     if request.method == "POST":
         form = GenQRForm(request.POST)
         if form.is_valid():
-            if form.cleaned_data['ticket'] not None:
+            if form.cleaned_data['ticket'] is not None:
                 t = Ticket.objects.get(ticket_id=form.cleaned_data['ticket'])
                 user = User.objects.get(id=t.user_id)
                 t.delete()
                 tickets = Ticket.objects.filter(user_id=user.id)
-                return render(request, 'info_admin.html', {'tickets': tickets. 'finded_user': finded_user})
-            if form.cleaned_data['passport'] not None:
+                return render(request, 'info_admin.html', {'tickets': tickets, 'finded_user': user})
+            if form.cleaned_data['passport'] is not None:
                 user = User.objects.find(passport=form.cleaned_data['passport'])
                 ticket = Ticket(user.id) 
                 code_qr = ticket.id 
@@ -103,12 +105,11 @@ def genQR(request):
                 qr.make(fit=True) 
                 img = qr.make_image(fill_color="black", back_color="white")
                 name_img = "qr-" + code_qr
-                destination = open('/tmp/' + name_img, 'wb+')
-                for chunk in up_file.chunks():
+                destination = open('/media/images/' + name_img, 'wb+')
+                for chunk in img.chunks():
                     destination.write(chunk)
                 destination.close()
-
-                ticket.image.save(name_img, File(open('/tmp/' + name_img, 'r')))
+                ticket.image.save('name_img.png', img, save=False)
                 ticket.save()
 
                 return redirect('/qr', {'ticket': ticket})
@@ -122,19 +123,19 @@ def main(request):
     if request.method == "POST":
         form = SearchForm(request.POST)
         if form.is_valid():
-            if form.cleaned_data['passport'] not None: 
+            if form.cleaned_data['passport'] is not None:
                 finded_user = User.objects.get(passport=form.cleaned_data['passport'])
                 tickets = Ticket.objects.filter(user_id=finded_user.id)
-            if form.cleaned_data['ticket_id'] not None:
+            if form.cleaned_data['ticket_id'] is not None:
                 ticket = Ticket.objects.get(id=form.cleaned_data['ticket_id'])
                 finded_user = User.objects.get(id=ticket.user_id)
                 tickets = Ticket.objects.filter(user_id=finded_user.id)
 
-            return redirect('/admin-panel', {'tickets': tickets. 'finded_user': finded_user})
+            return redirect('/admin-panel', {'tickets': tickets, 'finded_user': finded_user})
     else:
         form = SearchForm()
     return render(request, 'main.html', {'form': form})
 
 
-def qr(request):
+def qr_view(request):
     return render(request, 'qr.html')

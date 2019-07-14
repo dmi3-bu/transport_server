@@ -17,3 +17,13 @@ class UserRegisterForm(forms.Form):
 class UserLoginForm(forms.Form):
     username = forms.CharField(max_length=150)
     password = forms.CharField(max_length=30)
+
+
+class SearchForm(forms.Form):
+    ticket_id = forms.CharField(max_length=36)
+    passport = forms.CharField(max_length=10)
+
+
+class GenQRForm(forms.Form):
+    ticket = forms.CharField(max_length=36)
+    passport = forms.CharField(max_length=10)

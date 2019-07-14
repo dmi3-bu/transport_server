@@ -33,3 +33,4 @@ class Ticket(models.Model):
     activated = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     used_at = models.DateTimeField(null=True)
+    image = models.ImageField(upload_to='images', null=True)
