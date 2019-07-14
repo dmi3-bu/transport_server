@@ -36,8 +36,8 @@
                         {% if ticket.activated %}
                             <li>
                                 Талон: 32456787654356787 {{ ticket.id }}, от 03.05.2019 {{ ticket.created_at }}
-                                <form action="" style="display: inline-block;">
-                                    <input type="text" name="ticket" value="{{ ticket.id }}" style="display: none;">
+                                <form method="POST" action="/admin-panel" style="display: inline-block;">{% csrf_token %}
+                                    <input type="text" name="ticket_id" value="{{ ticket.id }}" style="display: none;">
                                     <button type="submit" class="btn btn-warning">Аннулировать</button>
                                 </form>
                             </li>
@@ -58,7 +58,7 @@
             <div class="col-md-12">
                 <ul>
                     {% for ticket in tickets %}
-                        {% if !ticket.activated %}
+                        {% if not ticket.activated %}
                             <li>
                                 Талон 1: 23423432642366343 {{ ticket.id }}, от 01.05.2019 {{ ticket.created_at }}
                             </li>
@@ -75,7 +75,7 @@
                 </h3>
             </div>
             <div class="col-md-6">
-                <form action="" style="display: inline-block;">
+                <form method="POST" action="/admin-panel"  style="display: inline-block;">{% csrf_token %}
                     <input type="text" name="passport" value="{{ finded_user.passport }}" style="display: none;">
                     <button type="submit" class="btn btn-success">Сгенерировать</button>
                 </form>

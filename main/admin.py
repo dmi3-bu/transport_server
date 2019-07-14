@@ -8,4 +8,4 @@ admin.site.register(Ticket)
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    fields = ('first_name', 'last_name', 'groups')
+    fields = ('first_name', 'last_name', 'groups', 'passport')

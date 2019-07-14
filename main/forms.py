@@ -20,10 +20,10 @@ class UserLoginForm(forms.Form):
 
 
 class SearchForm(forms.Form):
-    ticket_id = forms.CharField(max_length=36)
-    passport = forms.CharField(max_length=10)
+    ticket_id = forms.CharField(max_length=36, required=False)
+    passport = forms.CharField(max_length=10, required=False)
 
 
 class GenQRForm(forms.Form):
-    ticket = forms.CharField(max_length=36)
-    passport = forms.CharField(max_length=10)
+    ticket_id = forms.CharField(max_length=36, required=False)
+    passport = forms.CharField(max_length=10, required=False)

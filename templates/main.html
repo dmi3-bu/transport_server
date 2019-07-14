@@ -23,17 +23,17 @@
             <div class="row" style="margin-top: 40vh;">
                 <div class="col-md-3"></div>
                 <div class="col-md-6">
-                    <form>
+                    <form method="POST" action="/main">{% csrf_token %}
                         <div class="form-group row">
                             <label for="passport" class="col-sm-5 col-form-label">Паспорт (серия и номер)</label>
                             <div class="col-sm-7">
-                                <input name="passport" type="text" class="form-control" id="passport" placeholder="4567 247564">
+                                <input name="passport" type="text" class="form-control" id="passport" placeholder="4567 247564" maxlength="10">
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="ticket_id" class="col-sm-5 col-form-label">Номер талона</label>
                             <div class="col-sm-7">
-                                <input name="ticket_id" type="text" class="form-control" id="ticket_id" placeholder="32456787654356787">
+                                <input name="ticket_id" type="text" class="form-control" id="ticket_id" placeholder="7aee9b00-ea2b-40e6-9e94-821881cf7b72" maxlength="36">
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary mb-2" style="width: 100%;">Найти</button>
