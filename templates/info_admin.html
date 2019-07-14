@@ -76,7 +76,7 @@
             </div>
             <div class="col-md-6">
                 <form method="POST" action="/admin-panel"  style="display: inline-block;">{% csrf_token %}
-                    <input type="text" name="passport" value="{{ finded_user.passport }}" style="display: none;">
+                    <input type="text" name="passport" value="{{ passport }}" style="display: none;">
                     <button type="submit" class="btn btn-success">Сгенерировать</button>
                 </form>
             </div>

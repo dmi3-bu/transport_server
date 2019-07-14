@@ -11,7 +11,7 @@ urlpatterns = [
     path('register', views.register),
     path('logout', views.logout_view),
     path('qr', views.qr_view),
-    path('admin-panel', views.genQR),
+    path('admin-panel', views.genQR, name='admin-panel'),
     path('api/login', views.api_login),
     # path('api/beacons', views.beacons_index)
 ]

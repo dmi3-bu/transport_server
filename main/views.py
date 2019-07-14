@@ -1,5 +1,4 @@
-from uuid import UUID
-
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect
@@ -16,7 +15,10 @@ from rest_framework.status import (
     HTTP_404_NOT_FOUND,
     HTTP_200_OK
 )
+from urllib.parse import urlencode
 import qrcode
+from django.conf import settings
+from io import BytesIO
 
 User = get_user_model()
 
@@ -84,11 +86,10 @@ def genQR(request):
     if request.method == "POST":
         form = GenQRForm(request.POST)
         if form.is_valid():
-            print(11)
             if form.cleaned_data['passport'] is not '':
-                user = User.objects.find(passport=form.cleaned_data['passport'])
-                ticket = Ticket(user.id)
-                code_qr = ticket.id
+                user = User.objects.get(passport=form.cleaned_data['passport'])
+                ticket = Ticket(user_id=user)
+                code_qr = str(ticket.id)
 
                 qr = qrcode.QRCode(
                     version=1,
@@ -101,18 +102,15 @@ def genQR(request):
                 qr.make(fit=True)
                 img = qr.make_image(fill_color="black", back_color="white")
                 name_img = "qr-" + code_qr + '.png'
-                destination = open('/media/images/' + name_img, 'wb+')
-                for chunk in img.chunks():
-                    destination.write(chunk)
-                destination.close()
-                ticket.image.save('name_img.png', File(open('/media/images/' + name_img, 'r')), save=False)
+                img_path = settings.MEDIA_ROOT + '/' + name_img
+                blob = BytesIO()
+                img.save(blob)
+                ticket.image.save(name_img, File(blob), save=False)
                 ticket.save()
 
                 return redirect('/qr', {'ticket': ticket})
             else:
-                print(122)
                 if form.cleaned_data['ticket_id'] is not '':
-                    print(33)
                     t = Ticket.objects.get(id=form.cleaned_data['ticket_id'])
                     user = User.objects.get(id=t.user_id)
                     t.delete()
@@ -121,7 +119,7 @@ def genQR(request):
 
     else:
         form = GenQRForm()
-    return render(request, 'info_admin.html', {'form': form})
+    return render(request, 'info_admin.html', {'form': form, 'passport': request.GET['passport']})
 
 
 @login_required
@@ -131,14 +129,15 @@ def main(request):
         if form.is_valid():
             if form.cleaned_data['passport'] is not '':
                 finded_user = User.objects.get(passport=form.cleaned_data['passport'])
-                print(finded_user.id)
                 tickets = Ticket.objects.filter(user_id=finded_user.id)
             if form.cleaned_data['ticket_id'] is not '':
                 ticket = Ticket.objects.get(id=form.cleaned_data['ticket_id'])
                 finded_user = User.objects.get(id=ticket.user_id)
                 tickets = Ticket.objects.filter(user_id=finded_user.id)
-
-            return redirect('/admin-panel', {'tickets': tickets, 'finded_user': finded_user})
+            base_url = reverse('admin-panel')
+            query_string = urlencode({'passport': finded_user.passport})
+            url = '{}?{}'.format(base_url, query_string)
+            return redirect(url)  # 4
     else:
         form = SearchForm()
     return render(request, 'main.html', {'form': form})
