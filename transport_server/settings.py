@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main',
     'django_extensions',
+    'rest_framework',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -49,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'transport_server.urls'
@@ -132,4 +135,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'main/media')
 
 LOGIN_URL = '/login'
 LOGIN_REDIRECT_URL = '/main'
-ACCOUNT_LOGOUT_REDIRECT_URL = '/exit'
+
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_WHITELIST = ['http://localhost:3000']

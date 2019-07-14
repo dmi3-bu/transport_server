@@ -35,6 +35,7 @@ def logout_view(request):
     logout(request)
     return redirect('/login')
 
+
 def register(request):
     if request.method == 'POST':
         if request.POST['password'] != request.POST['password2']:
@@ -54,12 +55,8 @@ def register(request):
 
 @login_required
 def main(request):
-    context = {
-        # 'murren': murren,
-        # 'already_follow': already_follow
-    }
+    context = {}
     return render(request, 'main.html', context)
-    pass
 
 
 @csrf_exempt
@@ -69,11 +66,11 @@ def api_login(request):
     username = request.data.get("username")
     password = request.data.get("password")
     if username is None or password is None:
-        return Response({'error': 'Ошибка: Введите пароль и логин'},
+        return Response({'status': 'Ошибка: Введите пароль и логин'},
                         status=HTTP_400_BAD_REQUEST)
     user = authenticate(username=username, password=password)
     if not user:
-        return Response({'error': 'Ошибка: неправильные логин или пароль '},
+        return Response({'status': 'Ошибка: неправильные логин или пароль'},
                         status=HTTP_404_NOT_FOUND)
     return Response({'status': 'success'},
                     status=HTTP_200_OK)
