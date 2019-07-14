@@ -12,6 +12,8 @@ from rest_framework.status import (
     HTTP_404_NOT_FOUND,
     HTTP_200_OK
 )
+import qrcode
+
 User = get_user_model()
 
 
@@ -53,10 +55,7 @@ def register(request):
     return render(request, 'register.html', {'form': form})
 
 
-@login_required
-def main(request):
-    context = {}
-    return render(request, 'main.html', context)
+
 
 
 @csrf_exempt
@@ -74,3 +73,68 @@ def api_login(request):
                         status=HTTP_404_NOT_FOUND)
     return Response({'status': 'success'},
                     status=HTTP_200_OK)
+
+
+
+@login_required
+def genQR(request):
+    if request.method == "POST":
+        form = GenQRForm(request.POST)
+        if form.is_valid():
+            if form.cleaned_data['ticket'] not None:
+                t = Ticket.objects.get(ticket_id=form.cleaned_data['ticket'])
+                user = User.objects.get(id=t.user_id)
+                t.delete()
+                tickets = Ticket.objects.filter(user_id=user.id)
+                return render(request, 'info_admin.html', {'tickets': tickets. 'finded_user': finded_user})
+            if form.cleaned_data['passport'] not None:
+                user = User.objects.find(passport=form.cleaned_data['passport'])
+                ticket = Ticket(user.id) 
+                code_qr = ticket.id 
+
+                qr = qrcode.QRCode(
+                    version=1,
+                    error_correction=qrcode.constants.ERROR_CORRECT_L,
+                    box_size=10,
+                    border=4,
+                )
+
+                qr.add_data(code_qr)
+                qr.make(fit=True) 
+                img = qr.make_image(fill_color="black", back_color="white")
+                name_img = "qr-" + code_qr
+                destination = open('/tmp/' + name_img, 'wb+')
+                for chunk in up_file.chunks():
+                    destination.write(chunk)
+                destination.close()
+
+                ticket.image.save(name_img, File(open('/tmp/' + name_img, 'r')))
+                ticket.save()
+
+                return redirect('/qr', {'ticket': ticket})
+    else:
+        form = GenQRForm()
+    return render(request, 'info_admin.html', {'form': form})
+
+
+@login_required
+def main(request):
+    if request.method == "POST":
+        form = SearchForm(request.POST)
+        if form.is_valid():
+            if form.cleaned_data['passport'] not None: 
+                finded_user = User.objects.get(passport=form.cleaned_data['passport'])
+                tickets = Ticket.objects.filter(user_id=finded_user.id)
+            if form.cleaned_data['ticket_id'] not None:
+                ticket = Ticket.objects.get(id=form.cleaned_data['ticket_id'])
+                finded_user = User.objects.get(id=ticket.user_id)
+                tickets = Ticket.objects.filter(user_id=finded_user.id)
+
+            return redirect('/admin-panel', {'tickets': tickets. 'finded_user': finded_user})
+    else:
+        form = SearchForm()
+    return render(request, 'main.html', {'form': form})
+
+
+def qr(request):
+    return render(request, 'qr.html')
